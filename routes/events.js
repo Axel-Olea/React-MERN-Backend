@@ -1,8 +1,7 @@
 /*
     Event Routes
-    host + /api/events
+    /api/events
 */
-
 const { Router } = require('express');
 const { check } = require('express-validator');
 
@@ -13,28 +12,38 @@ const { getEventos, crearEvento, actualizarEvento, eliminarEvento } = require('.
 
 const router = Router();
 
+// Todas tienes que pasar por la validación del JWT
+router.use( validarJWT );
 
-// Todas deben pasar por la validacion del JWT
-router.use( validarJWT ); // Donde esté hacia abajo es necesaria la validación de token, si se quiere una ruta publica, dejar debajo de esa ruta
 
-// Obtener eventos
-router.get('/', getEventos);
+// Obtener eventos 
+router.get('/', getEventos );
 
-// Crear eventos
+// Crear un nuevo evento
 router.post(
-    '/', 
+    '/',
     [
-        check('title', 'El título es obligatorio').not().isEmpty(),
-        check('start', 'La fecha de inicio es obligatoria').custom(isDate),
-        check('end', 'La fecha de fin es obligatoria').custom(isDate),
-        validarCampos,
+        check('title','El titulo es obligatorio').not().isEmpty(),
+        check('start','Fecha de inicio es obligatoria').custom( isDate ),
+        check('end','Fecha de finalización es obligatoria').custom( isDate ),
+        validarCampos
     ],
-    crearEvento);
+    crearEvento 
+);
 
-// Actualizar evento
-router.put('/:id', actualizarEvento);
+// Actualizar Evento
+router.put(
+    '/:id', 
+    [
+        check('title','El titulo es obligatorio').not().isEmpty(),
+        check('start','Fecha de inicio es obligatoria').custom( isDate ),
+        check('end','Fecha de finalización es obligatoria').custom( isDate ),
+        validarCampos
+    ],
+    actualizarEvento 
+);
 
 // Borrar evento
-router.delete('/:id', eliminarEvento);
+router.delete('/:id', eliminarEvento );
 
 module.exports = router;
